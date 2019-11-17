@@ -1,38 +1,24 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace SeleniumDemoBasic.PageObjectModelApproach.Pages
 {
-    public abstract class BasePage: PageComponent
-    {       
-        public BasePage(IWebDriver driver): base(driver)
-        { 
-        } 
-        
-        public virtual string Url { get; set; }        
-        public virtual void Refresh()
-        {
-            _driver.Navigate().Refresh();
-        }
-        
-        public virtual void GoTo()
-        {
-            if (!string.IsNullOrEmpty(Url))
-            {
-                _driver.Navigate().GoToUrl(Url);
-                Initialize();
-            }
-        }
-        protected virtual void Initialize()
-        {
-        }
-    }
 
-    public abstract class PageComponent
+    public abstract class BasePage
     {
         protected readonly IWebDriver _driver;
-        public PageComponent(IWebDriver driver)
+
+        public BasePage(IWebDriver driver)
         {
             _driver = driver;
         }
+        public virtual void Initialize()
+        {
+        }
+        public virtual void WaitTillLoaded()
+        {
+            var wait = new WebDriverWait(_driver, PageComponent.MaxElementLoadTime);
+            wait.Until(d => ((IJavaScriptExecutor) d).ExecuteScript("return (typeof document !== 'undefined' ? document.readyState : 'notready')").Equals("complete"));
+        }        
     }
 }

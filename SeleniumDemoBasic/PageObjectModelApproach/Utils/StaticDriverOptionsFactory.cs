@@ -61,7 +61,7 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
             {
                 EnablePersistentHover = true,
                 IgnoreZoomLevel = true,
-                UnhandledPromptBehavior = UnhandledPromptBehavior.Dismiss,
+                UnhandledPromptBehavior = UnhandledPromptBehavior.Dismiss
             };
 
             SetPlatform(options, platformType);

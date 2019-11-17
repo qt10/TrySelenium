@@ -63,7 +63,11 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
 
         public static IWebDriver GetLocalWebDriver(FirefoxOptions options, WindowSize windowSize = WindowSize.Hd)
         {
-            IWebDriver driver = new FirefoxDriver(DriverPath, options);
+            var geckoDriverDirectory = DriverPath;
+            var geckoService = FirefoxDriverService.CreateDefaultService(geckoDriverDirectory);
+            geckoService.Host = "::1";
+
+            IWebDriver driver = new FirefoxDriver(geckoService, options);
             return SetWindowSize(driver, windowSize);
         }
 
