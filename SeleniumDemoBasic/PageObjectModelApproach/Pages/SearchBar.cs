@@ -1,29 +1,33 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using System;
 
 namespace SeleniumDemoBasic.PageObjectModelApproach.Pages
 {
     public class SearchBar : PageComponent
     {
-        public IWebElement _searchInput;
-        public IWebElement _btn;
+        private IWebElement _searchInput;
+        private IWebElement _btn;
 
-        public SearchBar(IWebDriver webDriver, By parentBy = null) : base(webDriver, parentBy)
+        public SearchBar(IWebDriver webDriver) : base(webDriver)
         {           
         }
 
         public override void Initialize()
         {
-            _searchInput = _parent.FindElement(By.Id("searchbox"));
-            _btn = _parent.FindElement(By.Id("searchButon"));
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+            _searchInput = wait.Until(d => d.FindElement(By.Id("searchbox")));
+            _btn = wait.Until(d => d.FindElement(By.Id("searchButon")));
         }
 
         public void SearchFor(string query, bool finalize = true)
         {
-            _searchInput.SendKeys(query);
+            foreach (var letter in query)
+                _searchInput.SendKeys(letter.ToString());
+
             if (finalize)
-            {
                 _searchInput.SendKeys(Keys.Enter);
-            }
         }
     }
 }

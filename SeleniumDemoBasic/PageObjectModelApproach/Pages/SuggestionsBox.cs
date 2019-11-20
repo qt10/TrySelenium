@@ -1,39 +1,40 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace SeleniumDemoBasic.PageObjectModelApproach.Pages
 {
     public class SuggestionsBox: PageComponent
     {
-        public SuggestionsBox(IWebDriver webDriver, By parentBy = null) : base(webDriver, parentBy)
+        private By _suggestionLocator = By.CssSelector("ul.ui-autocomplete > li.ui-menu-item");
+
+        public SuggestionsBox(IWebDriver webDriver) : base(webDriver)
         {
-            _parent = _driver.FindElement(parentBy ?? RootBy);
         }
 
         private IReadOnlyCollection<IWebElement> _rows;
-       
-        public List<string> GetHints()
+
+        public List<string> GetSuggestions()
         {
             return _rows.Select(i => i.Text).ToList();
         }
-
-        public bool IsVisible()
-        {
-            return _self.Displayed;
-        }
-
-        public override void WaitTillLoaded()
-        {
-            var wait = new WebDriverWait(_driver, MaxElementLoadTime);
-            wait.Until(d => d.FindElements(By.ClassName("ui-menu-item")).Count > 0);
-        }
-
+       
         public override void Initialize()
         {
-            _self = _driver.FindElement(By.ClassName("ui-autocomplete"));
-            _rows = _self.FindElements(By.ClassName("ui-menu-item"));
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            
+            _rows = wait.Until(d =>
+            {
+                var elements = d.FindElements(_suggestionLocator);
+
+                if (elements.Count == 0 || elements.All(i => !i.Displayed))
+                    return null;
+
+                return elements;
+            });
         }
 
     }

@@ -1,43 +1,47 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SeleniumDemoBasic.PageObjectModelApproach.Pages
 {
-    public class HomePage : Page, IInitializable<HomePage>, INavigatable<HomePage>
+    public class HomePage : Page
     {
-        public SearchBar SearchBar { get; private set; }
-        public SuggestionsBox SuggestionsBox { get; private set; }
-
-        public override string Url => "https://exlibris.ch";
+        private SearchBar _searchBar;
+        private SuggestionsBox _suggestionsBox;
 
         public HomePage(IWebDriver driver) : base(driver)
         {
         }
-        public new HomePage Initialize()
+
+        public override string Url => "https://exlibris.ch/de/";
+
+        public override void Initialize()
         {
-            SearchBar = new SearchBar(_driver);
-            SuggestionsBox = new SuggestionsBox(_driver);
+            _searchBar = new SearchBar(_driver);
+            _suggestionsBox = new SuggestionsBox(_driver);
 
             WaitTillLoaded();
 
-            SearchBar.Initialize();
-            SuggestionsBox.Initialize();            
-            return this;
+            _searchBar.Initialize(); 
         }
-        
+
+        public void SearchFor(string query)
+        {
+            _searchBar.SearchFor(query, false);
+        }
+
+        public List<string> GetSuggestions()
+        {
+            _suggestionsBox.Initialize();
+            return _suggestionsBox.GetSuggestions();
+        }
+
         public HomePage Navigate()
         {
             GoTo();
             return this;
-        }
-
-        public void WaitTillNavigatedFrom()
-        {
-            var wait = new WebDriverWait(_driver, PageComponent.MaxElementLoadTime);
-            wait.Until(d => d.Url != Url && d.Url != $"{d.Url}/de");
-            WaitTillLoaded();
         }
     }
 }

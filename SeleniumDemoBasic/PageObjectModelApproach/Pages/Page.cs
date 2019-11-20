@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using System;
 
 namespace SeleniumDemoBasic.PageObjectModelApproach.Pages
 {
@@ -22,7 +23,13 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Pages
                 _driver.Navigate().GoToUrl(Url);
                 Initialize();
             }
-        }      
-        
+        }
+
+        public override void WaitTillLoaded()
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return (typeof document !== 'undefined' ? document.readyState : 'notready')").Equals("complete"));
+        }
+
     }
 }

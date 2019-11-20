@@ -11,11 +11,14 @@ services:
     image: selenium/node-chrome-debug
     volumes: [/dev/shm:/dev/shm]
     depends_on: [hub]
+    ports: ["4501:4505"]
     environment:
       HUB_HOST: hub
   firefox:
     image: selenium/node-firefox-debug
     volumes: [/dev/shm:/dev/shm]
     depends_on: [hub]
+    ports: ["4506:4510"]
     environment:
       HUB_HOST: hub
+    

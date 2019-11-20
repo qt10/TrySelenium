@@ -5,16 +5,16 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Safari;
 
-namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
+namespace SeleniumDemoBasic.PageObjectModelApproach.Factories
 {
     public static class StaticDriverOptionsFactory
     {
-        public static ChromeOptions GetChromeOptions(PlatformType platformType = PlatformType.Any)
+        public static ChromeOptions GetChromeOptions(PlatformType platformType = PlatformType.Any, string proxy = null)
         {
-            return GetChromeOptions(false, platformType);
+            return GetChromeOptions(false, platformType, proxy);
         }
 
-        public static ChromeOptions GetChromeOptions(bool headless = false, PlatformType platformType = PlatformType.Any)
+        public static ChromeOptions GetChromeOptions(bool headless = false, PlatformType platformType = PlatformType.Any, string proxy = null)
         {
             ChromeOptions options = new ChromeOptions();
             options.AddArguments("disable-infobars", "test-type");
@@ -23,16 +23,25 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
                 options.AddArgument("headless");
             }
 
+            if (proxy != null)
+            {
+                options.Proxy = new Proxy()
+                {
+                    HttpProxy = proxy,
+                    SslProxy = proxy
+                };
+            }
+
             SetPlatform(options, platformType);
             return options;
         }
 
-        public static FirefoxOptions GetFirefoxOptions(PlatformType platformType = PlatformType.Any)
+        public static FirefoxOptions GetFirefoxOptions(PlatformType platformType = PlatformType.Any, string proxy = null)
         {
-            return GetFirefoxOptions(false, platformType);
+            return GetFirefoxOptions(false, platformType, proxy);
         }
 
-        public static FirefoxOptions GetFirefoxOptions(bool headless = false, PlatformType platformType = PlatformType.Any)
+        public static FirefoxOptions GetFirefoxOptions(bool headless = false, PlatformType platformType = PlatformType.Any, string proxy = null)
         {
             FirefoxOptions options = new FirefoxOptions
             {
@@ -43,6 +52,15 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
             {
                 options.AddArgument("--headless");
             }
+
+            if (proxy != null)
+            {
+                options.Proxy = new Proxy()
+                {
+                    HttpProxy = proxy,
+                    SslProxy = proxy
+                };
+            };
 
             SetPlatform(options, platformType);
             return options;

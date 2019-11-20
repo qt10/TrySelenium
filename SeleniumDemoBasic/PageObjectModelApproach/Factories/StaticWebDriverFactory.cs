@@ -13,7 +13,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
+namespace SeleniumDemoBasic.PageObjectModelApproach.Factories
 {
     public enum WindowSize
     {
@@ -44,11 +44,11 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
                 case Browser.IE:
                     return GetLocalWebDriver(StaticDriverOptionsFactory.GetInternetExplorerOptions());
 
-                //case Browser.Edge:
-                //    return GetLocalWebDriver(StaticDriverOptionsFactory.GetEdgeOptions());
+                case Browser.Edge:
+                    return GetLocalWebDriver(StaticDriverOptionsFactory.GetEdgeOptions());
 
-                //case Browser.Safari:
-                //    return GetLocalWebDriver(StaticDriverOptionsFactory.GetSafariOptions());
+                case Browser.Safari:
+                    return GetLocalWebDriver(StaticDriverOptionsFactory.GetSafariOptions());
 
                 default:
                     throw new PlatformNotSupportedException($"{browser} is not currently supported.");
@@ -119,15 +119,16 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
         public static IWebDriver GetRemoteWebDriver(
             Browser browser,
             Uri gridUrl,
-            PlatformType platformType = PlatformType.Any)
+            PlatformType platformType = PlatformType.Any,
+            string proxy = null)
         {
             switch (browser)
             {
                 case Browser.Firefox:
-                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(platformType), gridUrl);
+                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(platformType, proxy), gridUrl);
 
                 case Browser.Chrome:
-                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetChromeOptions(platformType), gridUrl);
+                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetChromeOptions(platformType, proxy), gridUrl);
 
                 case Browser.IE:
                     return GetRemoteWebDriver(StaticDriverOptionsFactory.GetInternetExplorerOptions(platformType), gridUrl);
@@ -163,11 +164,6 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Utils
                     driver.Manage().Window.Position = Point.Empty;
                     driver.Manage().Window.Size = new Size(1920, 1080);
                     return driver;
-
-                //case WindowSize.Uhd4K:
-                //    driver.Manage().Window.Position = Point.Empty;
-                //    driver.Manage().Window.Size = new Size(3840, 2160);
-                //    return driver;
 
                 default:
                     return driver;

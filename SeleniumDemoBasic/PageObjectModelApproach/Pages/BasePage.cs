@@ -13,12 +13,10 @@ namespace SeleniumDemoBasic.PageObjectModelApproach.Pages
             _driver = driver;
         }
         public virtual void Initialize()
-        {
+        {             
         }
         public virtual void WaitTillLoaded()
         {
-            var wait = new WebDriverWait(_driver, PageComponent.MaxElementLoadTime);
-            wait.Until(d => ((IJavaScriptExecutor) d).ExecuteScript("return (typeof document !== 'undefined' ? document.readyState : 'notready')").Equals("complete"));
-        }        
+        }
     }
 }
